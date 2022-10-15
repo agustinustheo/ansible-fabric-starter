@@ -32,7 +32,7 @@ Your machine should have:
 You can find installation instructions on [ansible website](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html).
 
 Provisioned nodes by ansible should have:
-* Ubuntu 16.04, Debian 9+ or CentOS 7
+* Ubuntu 20.04, Debian 9+ or CentOS 7
 * python3
 * sudo access
 
