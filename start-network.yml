@@ -140,27 +140,28 @@
         loop: "{{ global_channels }}"
         when: "org in item.particapants"
 
-      - name: Instantiating chaincode with ensorsement policy
-        raw: "docker exec cli.{{ org }}.{{ global_domain }} bash -c \
-        'export CORE_PEER_ADDRESS=peer0.{{ org }}.{{ global_domain }}:7051 && \
-        peer chaincode instantiate -n {{ item.chaincode.name }} \
-        -P \"{{ item.chaincode.policy }}\" \
-        -v {{ item.chaincode.version }} \
-        -c {{ item.chaincode.init | to_json }} \
-        -o orderer{{ orderer_id | default() }}.{{ global_domain }}:7050 -C {{ item.name }} --tls \
-        --cafile /etc/hyperledger/artifacts/crypto-config/ordererOrganizations/{{ global_domain }}/tlsca/tlsca.{{ global_domain }}-cert.pem \
-        {{ collections_config_param }} {{ collections_config_path }}'"
-        loop: "{{ global_channels }}"
-        when: "org in item.particapants[0] and item.chaincode.policy != ''"
+      # - name: Instantiating chaincode with ensorsement policy
+      #   raw: "docker exec cli.{{ org }}.{{ global_domain }} bash -c \
+      #   'export CORE_PEER_ADDRESS=peer0.{{ org }}.{{ global_domain }}:7051 && \
+      #   peer chaincode instantiate \
+      #   -o orderer{{ orderer_id | default() }}.{{ global_domain }}:7050 --tls \
+      #   --cafile /etc/hyperledger/artifacts/crypto-config/ordererOrganizations/{{ global_domain }}/tlsca/tlsca.{{ global_domain }}-cert.pem \
+      #   -C {{ item.name }} -n {{ item.chaincode.name }} \
+      #   -v {{ item.chaincode.version }} \
+      #   -c {{ item.chaincode.init | to_json }} \
+      #   {{ collections_config_param }} {{ collections_config_path }}'"
+      #   loop: "{{ global_channels }}"
+      #   when: "org in item.particapants[0] and item.chaincode.policy != ''"
 
       - name: Instantiating chaincode
         raw: "docker exec cli.{{ org }}.{{ global_domain }} bash -c \
         'export CORE_PEER_ADDRESS=peer0.{{ org }}.{{ global_domain }}:7051 && \
-        peer chaincode instantiate -n {{ item.chaincode.name }} \
+        peer chaincode instantiate \
+        -o orderer{{ orderer_id | default() }}.{{ global_domain }}:7050 --tls \
+        --cafile /etc/hyperledger/artifacts/crypto-config/ordererOrganizations/{{ global_domain }}/tlsca/tlsca.{{ global_domain }}-cert.pem \
+        -C {{ item.name }} -n {{ item.chaincode.name }} \
         -v {{ item.chaincode.version }} \
         -c {{ item.chaincode.init | to_json }} \
-        -o orderer{{ orderer_id | default() }}.{{ global_domain }}:7050 -C {{ item.name }} --tls \
-        --cafile /etc/hyperledger/artifacts/crypto-config/ordererOrganizations/{{ global_domain }}/tlsca/tlsca.{{ global_domain }}-cert.pem \
         {{ collections_config_param }} {{ collections_config_path }}'"
         loop: "{{ global_channels }}"
         when: "org in item.particapants[0] and item.chaincode.policy == ''"

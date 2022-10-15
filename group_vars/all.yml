@@ -18,10 +18,12 @@ use_couchdb: 'no'
 couchdb_port: 5984
 
 # Hyperledger framework version
-fabric_version: "1.4.4"
+fabric_version: "2.2.2"
 fabric_pack: "{{ fabric_version }}"
+fabric_ca_version: "1.4.8"
+fabric_ca_pack: "{{ fabric_ca_version }}"
 # fabric_thirdparty_version needed for couchdb, kafka etc..
-fabric_thirdparty_version: "0.4.15"
+fabric_thirdparty_version: "3.1"
 fabric_rest_version: "latest"
 node_version: "8-alpine"
 

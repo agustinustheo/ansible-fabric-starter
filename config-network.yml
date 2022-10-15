@@ -133,7 +133,9 @@
       raw: 'docker exec "cli.{{ global_domain }}" bash -c "cryptogen generate --config=cryptogen-{{ global_domain }}.yaml"'
 
     - name: Generating orderer genesis block with configtxgen
-      raw: 'docker exec "cli.{{ global_domain }}" configtxgen -profile OrdererGenesisEtcdRaft -outputBlock ./channel/genesis.block'
+      raw: 'docker exec "cli.{{ global_domain }}" configtxgen -profile OrdererGenesisEtcdRaft -outputBlock ./channel/genesis.block -channelID byfn-sys-channel'
+      loop: "{{ global_channels }}"
+      when: "global_channels is defined"
 
     - name: Changing artifacts file ownership
       raw: 'docker exec "cli.{{ global_domain }}" bash -c "chown -R {{ ansible_user_uid }}:{{ ansible_user_gid }} ."'
