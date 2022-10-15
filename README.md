@@ -33,7 +33,7 @@ You can find installation instructions on [ansible website](http://docs.ansible.
 
 Provisioned nodes by ansible should have:
 * Ubuntu 16.04, Debian 9+ or CentOS 7
-* python
+* python3
 * sudo access
 
 ## Ports, used by default, you probably want to whitelist them in your firewall.
@@ -163,7 +163,7 @@ First, ensure that you are in project-root directory:
 cd ansible-fabric-starter
 ```
 
-If your instances are debian-based (having apt package manager) you can automatically install python via:
+If your instances are debian-based (having apt package manager) you can automatically install python3 via:
 
 ```bash
 ansible-playbook install-python.yml -i hosts_raft.yml
@@ -263,7 +263,7 @@ Please note, that by default it's only transferred to target hosts, so you need 
 
 ### Included ansible roles description:
 
-* **common-packages** - installs jq, python-pip, rsync and docker-python (python libs for docker) on target hosts.
+* **common-packages** - installs jq, python3-pip, rsync and docker-python (python libs for docker) on target hosts.
 * **docker** - installs docker and docker-compose on target hosts. [Docker Ansible-galaxy role](https://github.com/geerlingguy/ansible-role-docker)
 * **fabric** - pulls all necessary Hyperledger-fabric Docker images.
 

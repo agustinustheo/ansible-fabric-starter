@@ -2,13 +2,13 @@
 # Additional pakages to be installed
 debian_package_list:
   - jq
-  - python-pip
+  - python3-pip
   - rsync
 
 redhat_package_list:
   - epel-release
   - jq
-  - python-pip
+  - python3-pip
   - rsync
 
 pip_packages:
