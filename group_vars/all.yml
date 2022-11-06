@@ -26,7 +26,7 @@ fabric_ca_version: "1.4.8"
 fabric_ca_pack: "{{ fabric_ca_version }}"
 # fabric_thirdparty_version needed for couchdb, kafka etc..
 fabric_thirdparty_version: "3.1"
-fabric_rest_version: "latest"
+fabric_rest_version: "0.1.0"
 node_version: "8-alpine"
 
 # Hyperledger explorer configs
