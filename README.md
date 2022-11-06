@@ -4,7 +4,7 @@ Everything is running inside docker-containers, and managed by docker-compose.
 Assumed that 1 physical (or virtual) host will serve one organisation, so **only multi-host deployment is supported** by this tool.
  
 ## Quick overview:
-* Hyperledger Fabric v1.4.4
+* Hyperledger Fabric v2.2.2
 * TLS enabled on all configurations
 * etcdraft orderer cluster
 * CouchDB and LevelDB peer database supprted
@@ -16,12 +16,10 @@ Assumed that 1 physical (or virtual) host will serve one organisation, so **only
 
 ## Changelog:
 
-From previous version, based on the use on Hyperledger Fabric v1.4.2:
+From previous version, based on the use on Hyperledger Fabric v1.4.8:
 
-* Hyperledger Fabric updated to version 1.4.4, and fabric-tools updated to 0.4.15;
-* Dropped support of solo and kafka ordering services;
-* Changed the way of configuring channels and installing chaincode (now, there are no pre-configured common channel, please see inventory file updates).
-* Deployment of hyperledger explorer moved to separated playbook, and not included automatically
+* Hyperledger Fabric updated to version 2.2.2, and fabric-tools updated to 0.4.15;
+* Changed the way of installing chaincode, following the Fabric v2 instructions (now, chaincode must be approved, etc. Please see inventory file updates).
 
 
 ## Technical Requirements:
@@ -40,6 +38,8 @@ Provisioned nodes by ansible should have:
 
 ### Ports, needed for blockchain instances to communicate with each other:
 
+* **9441** - Hyperledger fabric orderer port
+* **9451** - Hyperledger fabric orderer port
 * **7050** - Hyperledger fabric orderer port
 * **7054** - Hyperledger fabric CA port
 * **7051** - Hyperledger fabric peer port
@@ -81,23 +81,13 @@ all:
         particapants: # Organizations, should be included in channel
           - org0
           - org1
-          - org2
-          - org3
         chaincode: # Chaincode params
-          name: reference
+          name: chaincode
+          filename: chaincode
           version: "{{ global_chaincode_version }}"
           policy: ""
           init: '{"Args":["init","a","100","b","100"]}'
-      - name: bilateral-1 # Channel name
-        particapants: # Organizations, should be included in channel
-          - org2
-          - org3
-        chaincode: # Chaincode params
-          name: relationship
-          version: "{{ global_chaincode_version }}"
-          policy: ""
-          init: '{"Args":["init","a","100","b","100"]}'
-    orderer_count: 4 # Amount of orderers in network
+    orderer_count: 2 # Amount of orderers in network
   children:
     nodes:
       hosts:
@@ -109,10 +99,11 @@ all:
             - root_peer # This node will be used to create channels and instantiate chaincode
             - explorer # This node will serve hyperledger fabric explorer
           org: org0 # Organization name
+          org_id: 0
           orderer_id: 0
-          ansible_host: 192.168.1.4 # Real ip address or domain name of the machine
+          ansible_host: 10.0.3.38 # Real ip address or domain name of the machine
           ansible_user: ubuntu  # User with sudo access
-          #ansible_private_key_file: ~/path-to-private-key # Private key to identify ourselves
+          # ansible_private_key_file: ~/.ssh/id_rsa # Private key to identify ourselves
           ansible_ssh_port: 22 # Specify ssh-port here, if case of it's not defaulted.
         # Same structure for any other nodes
         org1.example.com:
@@ -121,32 +112,11 @@ all:
             - peer # This node will host peers and api containers for organization
             - explorer
           org: org1
+          org_id: 1 # ID of orderer-service which is running on this host
           orderer_id: 1 # ID of orderer-service which is running on this host
-          ansible_host: 192.168.1.3
-          ansible_user: ubuntu
-          #ansible_private_key_file: ~/path-to-private-key
-          ansible_ssh_port: 22
-        org2.example.com:
-          node_roles:
-            - orderer
-            - peer
-            - explorer
-          org: org2
-          orderer_id: 2
-          ansible_host: 192.168.1.2
-          ansible_user: ubuntu
-          #ansible_private_key_file: ~/path-to-private-key
-          ansible_ssh_port: 22
-        org3.example.com: # This node will host only kafka-broker and peer.
-          node_roles:
-            - peer
-            - orderer
-            - explorer
-          org: org3
-          orderer_id: 3
-          ansible_host: 192.168.1.1
-          ansible_user: ubuntu
-          #ansible_private_key_file: ~/path-to-private-key
+          ansible_host: 10.0.3.236 # Real ip address or domain name of the machine
+          ansible_user: ubuntu  # User with sudo access
+          # ansible_private_key_file: ~/.ssh/id_rsa # Private key to identify ourselves
           ansible_ssh_port: 22
    ```
 Feel free, to fulfill each host with any ansible-related connection details you need, like `ansible_private_key_file`. You can read about ansible inventory [here](http://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html).
