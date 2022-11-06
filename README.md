@@ -1,7 +1,7 @@
-# Ansible fabric starter by Altoros
-This project contains playbooks and roles for deployment of Hyperledger fabric project on multiple instances. 
-Everything is running inside docker-containers, and managed by docker-compose. 
-Assumed that 1 physical (or virtual) host will serve one organisation, so **only multi-host deployment is supported** by this tool.
+# Ansible Fabric Starter
+This project contains playbooks and roles for deployment of Hyperledger Fabric project on multiple instances. 
+
+Everything is running inside docker-containers, and managed by `docker-compose`. Assumed that 1 physical (or virtual) host will serve one organisation, so **only multi-host deployment is supported** by this tool.
  
 ## Quick overview:
 * Hyperledger Fabric v2.2.2
@@ -12,13 +12,15 @@ Assumed that 1 physical (or virtual) host will serve one organisation, so **only
 * Configurable amount of channels
 * 1 chaincode per channel
 * Build-in hyperledger fabric explorer
-* Build-in Altoros RestAPI
+* Build-in Fablo RestAPI
 
 ## Changelog:
 
 From previous version, based on the use on Hyperledger Fabric v1.4.8:
 
 * Hyperledger Fabric updated to version 2.2.2, and fabric-tools updated to 0.4.15;
+* Added Prometheus and Grafana for Fabric host monitoring;
+* Changed from Altoros REST to Fablo REST API for Fabric v2.x
 * Changed the way of installing chaincode, following the Fabric v2 instructions (now, chaincode must be approved, etc. Please see inventory file updates).
 
 
@@ -38,23 +40,25 @@ Provisioned nodes by ansible should have:
 
 ### Ports, needed for blockchain instances to communicate with each other:
 
-* **9441** - Hyperledger fabric orderer port
-* **9451** - Hyperledger fabric orderer port
 * **7050** - Hyperledger fabric orderer port
 * **7054** - Hyperledger fabric CA port
 * **7051** - Hyperledger fabric peer port
+* **9441** - Hyperledger fabric orderer prometheus metrics port
+* **9451** - Hyperledger fabric peer prometheus metrics port
 * **22** - ssh, or any other port number, needed for inital ansible deployment only
 
 ### Ports, you may want (or may not) open to the internet:
 
-* **4000** - Altoros RestAPI
+* **3000** - Grafana
+* **9090** - Prometheus
+* **4000** - Fablo REST API
 * **8080** - Hyperledger Blockchain Explorer web-app
 
 ## Instructions
 
 #### How can I clone this repositry?
 
-```git clone https://github.com/Altoros/Ansible-Fabric-Starter.git```
+```git clone https://github.com/agustinustheoo/ansible-fabric-starter.git```
 
 #### How should I configure my blockchain network?
 
@@ -98,6 +102,7 @@ all:
             - peer # This node will host peers and api containers for organization
             - root_peer # This node will be used to create channels and instantiate chaincode
             - explorer # This node will serve hyperledger fabric explorer
+            - monitoring # This node will serve hyperledger fabric monitoring
           org: org0 # Organization name
           org_id: 0
           orderer_id: 0
@@ -118,7 +123,7 @@ all:
           ansible_user: ubuntu  # User with sudo access
           # ansible_private_key_file: ~/.ssh/id_rsa # Private key to identify ourselves
           ansible_ssh_port: 22
-   ```
+```
 Feel free, to fulfill each host with any ansible-related connection details you need, like `ansible_private_key_file`. You can read about ansible inventory [here](http://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html).
 
 Adjust additional network configuration like _ports_, or _chaincode parameters_ for each node in `group_vars/all.yml`.
@@ -162,9 +167,6 @@ _hint:_ _`config-network.yml` will include `start-network.yml` automatically._
 
 If you'd like to redeploy network without reconfiguration, to drop the ledger for example, just launch `start-network.yml` (don't forget inventory configuration).
 
-```bash 
-ansible-playbook start-network.yml -i hosts_kafka.yml
-```
 #### How to deploy hyperledger explorer?
 
 1) Deploy network with ansible fabric starter.
@@ -349,6 +351,4 @@ All possible node roles:
 
 ## Contact
 
-Feel free to ask any questions at:
-
-* **E-mail**: `ebc@altoros.com`
+Feel free to ask any questions via Issues.
