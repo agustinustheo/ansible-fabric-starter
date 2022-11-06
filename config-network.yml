@@ -66,11 +66,17 @@
   - name: Configure peer
     block:
 
-    - name: Trnasfer chaincode
+    - name: Transfer chaincode
+      template:
+        src: "{{ item.from }}"
+        dest: "{{ item.to }}"
+        mode: a+x
+      loop: "{{ chaincode_templates }}"
+
+    - name: Transfer chaincode binary
       synchronize:
-        src: "templates/chaincode"
-        dest: "{{ fabric_starter_workdir }}"
-        recursive: yes
+        src: "templates/chaincode/chaincode.tar.gz"
+        dest: "{{ chaincode }}"
 
     - name: Transfer collections config
       template:

@@ -40,7 +40,6 @@ services:
     image: hyperledger/fabric-tools:{{ fabric_pack }}
     tty: true
     environment:
-      - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_TLS_ENABLED=true
@@ -52,7 +51,6 @@ services:
       - /var/run/:/host/var/run/
       - {{ fabric_starter_workdir }}/artifacts:/etc/hyperledger/artifacts
       - {{ fabric_starter_workdir }}/chaincode:/opt/chaincode
-      - {{ fabric_starter_workdir }}/chaincode/{{ global_chaincode_lang }}:/opt/gopath/src
     working_dir: /etc/hyperledger/artifacts
 
   api-base:

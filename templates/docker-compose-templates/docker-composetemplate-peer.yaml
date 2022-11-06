@@ -103,6 +103,7 @@ services:
 
   cli.{{ org }}.{{ global_domain }}:
     container_name: cli.{{ org }}.{{ global_domain }}
+    network_mode: "host"
     extends:
       service: cli.{{ global_domain }}
     environment:

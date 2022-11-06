@@ -72,12 +72,12 @@
   - name: Configure new org
     block:
 
-    - name: Trnasfer chaincode
-      synchronize:
-        src: "templates/chaincode"
-        dest: "{{ fabric_starter_workdir }}"
-        recursive: yes
-      when: "'newcomer' in node_roles"
+    - name: Transfer chaincode
+      template:
+        src: "{{ item.from }}"
+        dest: "{{ item.to }}"
+        mode: a+x
+      loop: "{{ chaincode_templates }}"
 
     - name: Start cli container without crypto volumes
       raw: "docker-compose --file {{ docker_artifacts }}/docker-compose-{{ org }}.yaml up -d 'cliNoCryptoVolume.{{ org }}.{{ global_domain }}'"

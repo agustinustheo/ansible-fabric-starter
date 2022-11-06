@@ -64,6 +64,16 @@ fabric_artifacts_folders:
 # - source
 #   destination
 
+chaincode_templates:
+  - from: "templates/chaincode/deployCC.sh"
+    to: "{{ chaincode }}/deployCC.sh"
+  - from: "templates/chaincode/checkCC.sh"
+    to: "{{ chaincode }}/checkCC.sh"
+  - from: "templates/chaincode/envVar.sh"
+    to: "{{ chaincode }}/envVar.sh"
+  - from: "templates/chaincode/scriptUtils.sh"
+    to: "{{ chaincode }}/scriptUtils.sh"
+
 fabric_templates:
   - from: "docker-compose-templates/base.yaml"
     to: "{{ docker_artifacts }}/base.yaml"
