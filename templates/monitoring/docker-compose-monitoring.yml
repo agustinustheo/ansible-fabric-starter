@@ -1,0 +1,32 @@
+version: "2"
+
+networks:
+  test:
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.25.0
+    container_name: prometheus
+    restart: always
+    tty: true
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - test
+
+  grafana:
+    image: grafana/grafana:7.4.2
+    container_name: grafana
+    environment:
+      - GF_AUTH_PROXY_ENABLED=true
+      - GF_PATHS_PROVISIONING=/var/lib/grafana/provisioning/
+    volumes:
+      - ./provisioning/:/var/lib/grafana/provisioning/
+    ports:
+      - 3000:3000
+    networks:
+      - test
+    depends_on:
+      - prometheus

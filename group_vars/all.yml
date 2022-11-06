@@ -12,6 +12,8 @@ fabric_starter_workdir: "/home/{{ ansible_user }}/{{ project_name }}"
 docker_artifacts: "{{ fabric_starter_workdir }}/dockercompose"
 fabric_artifacts: "{{ fabric_starter_workdir }}/artifacts"
 
+monitoring_artifacts: "{{ fabric_starter_workdir }}/monitoring"
+
 # Use couchdb in peers instead of leveldb
 #use_couchdb: 'yes'
 use_couchdb: 'no'
@@ -38,6 +40,8 @@ orderer_port: 7050
 api_port: 4000
 ca_port: 7054
 peer0_port: 7051
+peer_listener_port: 9451
+orderer_listener_port: 9441
 
 #Chaincode configs
 chaincode: "{{ fabric_starter_workdir }}/chaincode"
@@ -56,6 +60,9 @@ fabric_artifacts_folders:
   - "{{ fabric_starter_workdir }}"
   - "{{ docker_artifacts }}"
   - "{{ fabric_artifacts }}"
+  - "{{ monitoring_artifacts }}"
+  - "{{ monitoring_artifacts }}/provisioning/datasources"
+  - "{{ monitoring_artifacts }}/provisioning/dashboards"
   - "{{ fabric_artifacts }}/channel"
   - "{{ chaincode }}"
   - "{{ fabric_starter_workdir }}/www-client"
@@ -115,6 +122,7 @@ files_to_rsync_nodes_phase1:
     to: "crypto-config/ordererOrganizations/{{ global_domain }}/tlsca"
   - from: "channel"
     to: ""
+
 files_to_rsync_nodes_phase2:
   - from: "*.block"
     to: ""
@@ -124,3 +132,15 @@ files_hl_explorer:
     to: "{{ fabric_artifacts }}/explorer-config.json"
   - from: "docker-compose-templates/docker-composetemplate-explorer.yaml"
     to: "{{ docker_artifacts }}/docker-compose-explorer.yaml"
+
+files_hl_monitoring:
+  - from: "monitoring/docker-compose-monitoring.yml"
+    to: "{{ monitoring_artifacts }}/docker-compose-monitoring.yml"
+  - from: "monitoring/prometheus.yml"
+    to: "{{ monitoring_artifacts }}/prometheus.yml"
+  - from: "monitoring/provisioning/datasources/datasource.yaml"
+    to: "{{ monitoring_artifacts }}/provisioning/datasources/datasource.yaml"
+  - from: "monitoring/provisioning/dashboards/dashboard.json"
+    to: "{{ monitoring_artifacts }}/provisioning/dashboards/dashboard.json"
+  - from: "monitoring/provisioning/dashboards/dashboard.yaml"
+    to: "{{ monitoring_artifacts }}/provisioning/dashboards/dashboard.yaml"

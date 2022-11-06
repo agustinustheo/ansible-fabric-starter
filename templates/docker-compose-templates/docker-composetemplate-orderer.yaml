@@ -14,6 +14,8 @@ services:
     restart: {{ docker_restart_policy }}
     image: hyperledger/fabric-orderer:{{ fabric_pack }}
     environment:
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:{{ orderer_listener_port }}
+      - ORDERER_METRICS_PROVIDER=prometheus
       - ORDERER_HOST=orderer{{ orderer_id | default() }}.{{ global_domain }}
       - ORDERER_GENERAL_LOGLEVEL=info
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -32,6 +34,7 @@ services:
     command: orderer
     ports:
       - {{ orderer_port }}:7050
+      - {{ orderer_listener_port }}:9441
     volumes:
         - {{ fabric_artifacts }}/channel:/etc/hyperledger/configtx
         - {{ fabric_artifacts }}/crypto-config/ordererOrganizations/{{ global_domain }}/orderers/orderer{{ orderer_id | default() }}.{{ global_domain }}/:/etc/hyperledger/crypto/orderer

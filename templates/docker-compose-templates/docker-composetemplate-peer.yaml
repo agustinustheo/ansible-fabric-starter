@@ -40,6 +40,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.{{ org }}.{{ global_domain }}:7051
     ports:
       - {{ peer0_port }}:7051
+      - {{ peer_listener_port }}:9451
     volumes:
         - {{ fabric_artifacts }}/crypto-config/peerOrganizations/{{ org }}.{{ global_domain }}/peers/peer0.{{ org }}.{{ global_domain }}/:/etc/hyperledger/crypto/peer
         - peer0.{{ org }}.{{ global_domain }}:/var/hyperledger/production

@@ -29,6 +29,7 @@ all:
             - peer # This node will host peers and api containers for organization
             - root_peer # This node will be used to create channels and instantiate chaincode
             - explorer # This node will serve hyperledger fabric explorer
+            - monitoring # This node will serve hyperledger fabric monitoring
           org: org0 # Organization name
           org_id: 0
           orderer_id: 0

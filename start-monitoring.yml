@@ -1,0 +1,34 @@
+---
+- hosts: nodes
+  tasks:
+    - name: Deploy Hyperledger Monitoring
+      block:
+        - name: Clean all previous monitoring dockers, if any
+          raw: "docker rm -f $(docker ps -a | grep -E 'grafana|prometheus' | awk '{print $1};')"
+          ignore_errors: true
+
+        - name: Clean all docker volumes
+          raw: "docker volume rm $(docker volume ls -qf dangling=true)"
+          ignore_errors: true
+
+        - name: Clean all monitoring images
+          raw: "docker image rm $(docker image ls | grep -E 'grafana|prometheus' | awk '{print $1};')"
+          ignore_errors: true
+
+        - name: Ensure all folders exist
+          file:
+            dest: "{{ item }}"
+            state: directory
+          loop: "{{ fabric_artifacts_folders }}"
+
+        - name: Template SDK network-config
+          template:
+            src: "{{ item.from }}"
+            dest: "{{ item.to }}"
+          loop: "{{ files_hl_monitoring }}"
+
+        - name: Launch Hyperledger monitoring
+          raw: 'docker-compose --file {{ monitoring_artifacts }}/docker-compose-monitoring.yml up -d 2>&1'
+
+      when: "'monitoring' in node_roles"
+      tags: [ 'monitoring']
