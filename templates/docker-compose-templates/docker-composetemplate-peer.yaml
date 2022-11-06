@@ -62,16 +62,24 @@ services:
 
   # fabric-rest api server
   api.{{ org }}.{{ global_domain }}:
+    network_mode: "host"
     extends:
       file: base.yaml
       service: api-base
     container_name: api.{{ org }}.{{ global_domain }}
-    ports:
-      - {{ api_port }}:4000
+    # ports:
+    #   - {{ api_port }}:4000
     environment:
       - ORG={{ org }}
-      - PORT=4000
+      - PORT={{ api_port }}
+      - MSP_ID={{ org }}MSP
+      - FABRIC_CA_URL=http://localhost:7054
+      - FABRIC_CA_NAME=ca.{{ org }}.{{ global_domain }}
+      - AS_LOCALHOST=true
+      - DISCOVERY_URLS=grpc://localhost:7051
+      - HFC_LOGGING={"debug":"console"}
     depends_on:
+      - ca.{{ org }}.{{ global_domain }}
       - peer0.{{ org }}.{{ global_domain }}
     extra_hosts:
 {% for fabric_host in groups['nodes'] %}
